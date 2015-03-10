@@ -329,9 +329,9 @@ void sanitize(char *s)
     if (!s)
         return;
 
-    for (; *s; s++) {
+    while (*s) {
         s += strspn(s, accept);
-        if (*s) *s = '_';
+        if (*s) *s++ = '_';
     }
 }
 
@@ -530,7 +530,11 @@ int restorecon(const char* pathname)
     return selinux_android_restorecon(pathname, 0);
 }
 
+#define RESTORECON_RECURSIVE_FLAGS \
+        (SELINUX_ANDROID_RESTORECON_FORCE | \
+        SELINUX_ANDROID_RESTORECON_RECURSE)
+
 int restorecon_recursive(const char* pathname)
 {
-    return selinux_android_restorecon(pathname, SELINUX_ANDROID_RESTORECON_RECURSE);
+    return selinux_android_restorecon(pathname, RESTORECON_RECURSIVE_FLAGS);
 }
